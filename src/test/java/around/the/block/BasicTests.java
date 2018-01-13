@@ -28,7 +28,7 @@ public class BasicTests {
    @Test
    public void testTamperEvident() throws InvalidBlockException {
       
-      BlockChain bc=createTestChain(2, 5);
+      BlockChain bc=createTestChain(3, 5);
       
       Assert.assertTrue("Block Chain should be valid.", bc.validate());
       
@@ -39,6 +39,24 @@ public class BasicTests {
       try {
          bc.validate(); // thousl throw
          Assert.fail("Block chain should be invalid after tamper.");
+      } catch (InvalidBlockException ex) {
+         log.debug("Ex: "+ex);
+      }
+   }
+   
+   @Test
+   public void testImmutableBlock0() throws InvalidBlockException {
+      BlockChain bc=createTestChain(3, 5);
+      
+      Assert.assertTrue("Block Chain should be valid.", bc.validate());
+      
+      Block b=bc.getRoot();
+      
+      b.setData("foo");
+      
+      try {
+         bc.validate(); // thousl throw
+         Assert.fail("Block chain should be invalid after tamper Block-0.");
       } catch (InvalidBlockException ex) {
          log.debug("Ex: "+ex);
       }

@@ -19,9 +19,6 @@ public class LeadingZeroBlockValidator implements BlockValidator {
    
    @Override
    public boolean isValid(Block b) {
-      if (b.header.prev == null)
-         return true;
-      
       String hash=b.hash();
       char c[]=hash.toCharArray();
       for (int i=0; i<leadingZeros; i++) {
@@ -42,7 +39,7 @@ public class LeadingZeroBlockValidator implements BlockValidator {
          b.setNonce(""+(nonce++));
       }
       
-      log.debug("Found nonce for Block: "+b);
+      log.debug("Found nonce "+nonce+" for Block: "+b);
       
       return b.header.nonce;
    }

@@ -19,10 +19,15 @@ public class BlockChain {
       first=root;
       last=root;
       blockValidator=bv;
+      bv.findNonce(first);
    }
    
    public Block getLast() {
       return last;
+   }
+   
+   public Block getRoot() {
+      return first;
    }
    
    public synchronized void add(Block b) throws InvalidBlockException {

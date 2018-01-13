@@ -29,7 +29,7 @@ public class Block {
    public String hash() {
       if (header.prev == null) {
          // root block.
-         return "root.block";
+         return hasher.hashHex(data+header.nonce);
       }
       String s=data+header.prevHash+header.nonce;
       return hasher.hashHex(s);
