@@ -19,6 +19,9 @@ public class LeadingZeroBlockValidator implements BlockValidator {
    
    @Override
    public boolean isValid(Block b) {
+      if (b.header.prev == null)
+         return true;
+      
       String hash=b.hash();
       char c[]=hash.toCharArray();
       for (int i=0; i<leadingZeros; i++) {

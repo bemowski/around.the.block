@@ -1,7 +1,9 @@
-package basics.cli;
+package around.the.block;
 
 import java.util.Properties;
 
+import org.junit.Assert;
+import org.junit.Test;
 import org.slf4j.Logger;
 
 import basics.exception.InvalidBlockException;
@@ -10,30 +12,46 @@ import basics.model.BlockChain;
 import basics.model.BlockValidator;
 import basics.model.LeadingZeroBlockValidator;
 import net.jmatrix.console.log.ColorConsoleConfig;
-import net.jmatrix.jproperties.util.ArgParser;
 import net.jmatrix.utils.ClassLogFactory;
 
-public class BCMain {
+public class BasicTests {
    private static final Logger log=ClassLogFactory.getLog();
-
    
-   public static void main(String args[]) throws InvalidBlockException {
-      ArgParser ap=new ArgParser(args);
+   static {
+      Properties p=System.getProperties();
+      p.put("slf.cc.level","DEBUG");
+      p.put("slf.cc.formatter","ANSIColorFormatter");
       
-      initLog(ap);
+      ColorConsoleConfig.configure(p);
+   }
+   
+   @Test
+   public void testTamperEvident() throws InvalidBlockException {
       
-      // create a valid chain of 3
+      BlockChain bc=createTestChain(2, 5);
       
+      Assert.assertTrue("Block Chain should be valid.", bc.validate());
+      
+      Block b=bc.getLast().getHeader().getPrev();
+      
+      b.setData("foo");
+      
+      try {
+         bc.validate(); // thousl throw
+         Assert.fail("Block chain should be invalid after tamper.");
+      } catch (InvalidBlockException ex) {
+         log.debug("Ex: "+ex);
+      }
+   }
+   
+   
+   BlockChain createTestChain(int zeros, int size) throws InvalidBlockException {
       Block root=new Block(null, null, "Block-0");
       log.debug("Root Block: "+root);
       
-      int zeros=ap.getIntArg("-z", 1);
       BlockValidator bv=new LeadingZeroBlockValidator(zeros);
       
       BlockChain bc=new BlockChain(root, bv);
-      
-      int size=4;
-      size=ap.getIntArg("-s", size);
       
       log.debug("Building BlockChain, size = "+size);
       for (int i=1; i<size; i++) {
@@ -45,24 +63,6 @@ public class BCMain {
          
          bc.add(b);
       }
-      
-      System.out.println("\n\n");
-      
-      // print the chain.
-      Block b=bc.getLast();
-      while (b != null) {
-         log.debug("   Block: "+b);
-         b=b.getHeader().getPrev();
-      }
-      
-      bc.validate();
-   }
-   
-   static void initLog(ArgParser ap) {
-      Properties p=System.getProperties();
-      p.put("slf.cc.level","DEBUG");
-      p.put("slf.cc.formatter","ANSIColorFormatter");
-      
-      ColorConsoleConfig.configure(p);
+      return bc;
    }
 }

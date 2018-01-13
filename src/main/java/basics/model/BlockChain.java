@@ -33,15 +33,19 @@ public class BlockChain {
       last=b;
    }
    
-   public synchronized void validate() throws InvalidBlockException {
+   public synchronized boolean validate() throws InvalidBlockException {
       Block b=last;
       
       while (b != null) {
          boolean valid=blockValidator.isValid(b);
          if (!valid) {
-            throw new InvalidBlockException(b+" is not valid.");
+            throw new InvalidBlockException(b+" is not valid. "+
+                  "This BlockChain has been altered.");
          }
          b=b.header.prev;
       }
+      
+      log.debug("BlockChain is valid.");
+      return true;
    }
 }

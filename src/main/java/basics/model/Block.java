@@ -39,6 +39,13 @@ public class Block {
       return data;
    }
    
+   public void setData(String s) {
+      // this is used in tests to show that if the data
+      // is tampered with after construction, the BlockChain
+      // will become invalid.
+      data=s;
+   }
+   
    public BlockHeader getHeader() {
       return header;
    }
