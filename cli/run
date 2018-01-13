@@ -1,0 +1,18 @@
+#!/bin/bash
+
+JAR_DIR=../lib
+export LOCALCLASSPATH=
+
+for jar in `ls -1 $JAR_DIR/*jar|grep -v logback`
+do
+    LOCALCLASSPATH=$LOCALCLASSPATH:$jar
+done
+
+LOCALCLASSPATH=$LOCALCLASSPATH:../classes/main:../resources/main
+
+LOCALCLASSPATH=.:./jars/slf-color-console-1.0.8.jar:./jars/postgresql-8.1-404.jdbc3.jar:$LOCALCLASSPATH
+
+echo "Classpath: $LOCALCLASSPATH"
+
+java -Xmx1024m -Dslf.cc.level=debug $JAVA_OPTIONS -cp $LOCALCLASSPATH $*
+
